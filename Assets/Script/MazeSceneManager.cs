@@ -16,6 +16,9 @@ public class MazeSceneManager : MonoBehaviour
 
     public GameObject floorW, floorB, objMouse, objGoal;
 
+    /// <summary>
+    /// 矩陣長寬
+    /// </summary>
     [Range(1, 10)]
     public int width, height;
 
@@ -33,23 +36,24 @@ public class MazeSceneManager : MonoBehaviour
 
     [SerializeField]
     int intX, intY;
-   
+
     Coordinate[,] arrayCoordinateFloor;
 
-    Transform transformMouse;
+    Transform transformMouse => objMouse.transform;
+
+    Stack<Vector2> stackVector2 = new Stack<Vector2>();
 
     Quaternion quaternionUp = new Quaternion(0, 0, 0, 1),
                quaternionRight = new Quaternion(0, 0.7071068f, 0, 0.7071068f),
                quaternionDown = new Quaternion(0, 1, 0, 0),
                quaternionLeft = new Quaternion(0, -0.7071068f, 0, 0.7071068f);
 
-    Stack<Vector2> stackVector2 = new Stack<Vector2>();
-
-    WaitForSeconds waitSecMoveTime,
-        waitSecWidth, waitSecHeight,
-        waitSecOne = new WaitForSeconds(1),
-        waitSecTwo = new WaitForSeconds(2),
-        waitSecFive = new WaitForSeconds(5);
+    WaitForSeconds waitSecMoveTime => new WaitForSeconds(floatMoveTime);
+    WaitForSeconds waitSecWidth => new WaitForSeconds(width);
+    WaitForSeconds waitSecHeight => new WaitForSeconds(height);
+    WaitForSeconds waitSecOne = new WaitForSeconds(1),
+                   waitSecTwo = new WaitForSeconds(2),
+                   waitSecFive = new WaitForSeconds(5);
     #endregion
 
     #region Public Method
@@ -63,11 +67,6 @@ public class MazeSceneManager : MonoBehaviour
     void Awake()
     {
         InstanceSceneManager();
-
-        transformMouse = objMouse.transform;
-        waitSecMoveTime = new WaitForSeconds(floatMoveTime);
-        waitSecWidth = new WaitForSeconds(width);
-        waitSecHeight = new WaitForSeconds(height);
         arrayCoordinateFloor = new Coordinate[width , height];        
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
     } 
@@ -113,7 +112,7 @@ public class MazeSceneManager : MonoBehaviour
             }
         }
 
-        foreach (Coordinate cg in arrayCoordinateFloor) { cg.Floor.transform.DOMoveZ(cg.y, cg.y, false).SetEase(Ease.OutQuart); } //height可以試試看自己座標
+        foreach (Coordinate cg in arrayCoordinateFloor) { cg.Floor.transform.DOMoveZ(cg.y, cg.y, false).SetEase(Ease.OutQuart); }
         yield return waitSecHeight;
 
         foreach (Coordinate cg in arrayCoordinateFloor) { cg.Floor.transform.DOMoveX(cg.x, cg.x, false).SetEase(Ease.OutQuart); }
